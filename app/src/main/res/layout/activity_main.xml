@@ -9,8 +9,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.orderbird.ethanblue.MainActivity">
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/discovery"
+        android:text="Discover the world!"
+        android:layout_alignParentBottom="true"
+        />
     <ListView
         android:id="@+id/bluelist"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_above="@id/discovery"
+        />
 </RelativeLayout>

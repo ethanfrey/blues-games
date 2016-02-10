@@ -3,6 +3,7 @@ package com.orderbird.ethanblue;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,6 @@ TODO:
 http calls
 background services
 bluetooth queries
-UI components
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         }
         adapter = new ListAdapter(this, mData);
         bluelist.setAdapter(adapter);
+//        Toast.makeText(this, "Create Main Activity", Toast.LENGTH_SHORT).show();
     }
 
     @Override

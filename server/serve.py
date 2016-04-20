@@ -2,18 +2,7 @@ from aiohttp import web
 import argparse
 import asyncio
 
-
 import data
-
-
-## web app
-async def echo(request):
-    path = request.match_info['path']
-    if path in CHARMAP:
-        raise web.HTTPFound('/' + CHARMAP[path])
-    else:
-        text = '<html><head><meta charset="UTF-8"></head><body><center><h1>{}</h1></center></body></html>'.format(path)
-        return web.Response(body=text.encode('utf-8'))
 
 
 class Group:
@@ -39,8 +28,8 @@ class Group:
 
     async def doSet(self, request):
         uuid = request.match_info['uuid']
-        post = await request.post()
-        name = post.get('name')
+
+        name = (await request.json()).get('name')
         if not name:
             return web.json_response({'ok': False})
 

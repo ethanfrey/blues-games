@@ -24,13 +24,11 @@ public class ServerTalk {
             data.put("name", name);
             JsonObjectRequest jsObjRequest = new JsonObjectRequest
                     (Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
-
                         @Override
                         public void onResponse(JSONObject response) {
                             Toast.makeText(ctx, "POST says: " + response.toString(), Toast.LENGTH_LONG).show();
                         }
                     }, new Response.ErrorListener() {
-
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Toast.makeText(ctx, "Bad service....", Toast.LENGTH_LONG).show();
@@ -42,5 +40,25 @@ public class ServerTalk {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void getAllUsers(final MainActivity ctx) {
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, baseUrl, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        ctx.updateUserList(response);
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ctx, "Bad service....", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        // Access the RequestQueue through your singleton class.
+        HTTPQueue.getInstance(ctx).addToRequestQueue(jsObjRequest);
     }
 }

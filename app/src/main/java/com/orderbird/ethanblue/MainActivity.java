@@ -16,12 +16,21 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /*
 TODO:
-http calls  -  volley  (for registration, notification of found)
+structure to hold display objects with name and uuid to help mapping them
+better display code (new list adaptor)
+default data
+
 background services  ()
 push notification  - google service from web app
  */
@@ -33,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     List mData;
     Button mRegButton;
     Button mButton;
+    Map<String, String> mUserMap;
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -87,10 +97,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void discover() {
-        // todo: post this online!
-        String myUuid = getAddress();
-        Toast.makeText(this, "My address = " + myUuid, Toast.LENGTH_LONG).show();
-
+        getUserList();
 //        boolean worked = adapt.startDiscovery();
 //        if (! worked) {
 //            Toast.makeText(this, "Bluetooth failed", Toast.LENGTH_LONG).show();
@@ -124,6 +131,25 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
+    public void getUserList() {
+        ServerTalk.getAllUsers(MainActivity.this);
+    }
+
+    public void updateUserList(JSONObject users) {
+        try {
+            mUserMap = new HashMap<String, String>();
+            Iterator keys = users.keys();
+            while (keys.hasNext()) {
+                String key = (String)keys.next();
+                String val = users.getString(key);
+                mUserMap.put(key, val);
+            }
+            Toast.makeText(this, "Got data", Toast.LENGTH_LONG).show();
+            // TODO: refresh mData with mappings....
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onDestroy() {

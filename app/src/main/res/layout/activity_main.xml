@@ -10,12 +10,23 @@
     tools:context="com.orderbird.ethanblue.MainActivity">
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/discovery"
         android:text="Discover the world!"
         android:layout_alignParentBottom="true"
         />
+    <Button
+        android:layout_alignParentStart="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/discovery"
+        android:id="@+id/register"
+        android:text="Present yourself!"
+        android:layout_alignParentBottom="true"
+        />
+
     <ListView
         android:id="@+id/bluelist"
         android:layout_width="match_parent"

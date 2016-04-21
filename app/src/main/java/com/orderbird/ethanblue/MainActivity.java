@@ -27,10 +27,6 @@ import java.util.Map;
 
 /*
 TODO:
-structure to hold display objects with name and uuid to help mapping them
-better display code (new list adaptor)
-default data
-
 background services  ()
 push notification  - google service from web app
  */
@@ -63,6 +59,8 @@ class UserData {
 
 public class MainActivity extends AppCompatActivity {
 
+    final private boolean USE_BLUETOOTH = false;
+
     ListView bluelist;
     ListAdapter adapter;
     List mData;
@@ -70,16 +68,25 @@ public class MainActivity extends AppCompatActivity {
     Button mButton;
     Map<String, String> mUserMap;
 
+    protected boolean isInList(String uuid) {
+        for (Object item: mData) {
+            UserData user = (UserData)item;
+            if (user.getUuid() == uuid) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            // TODO: fix this with the UserData
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                String line = device.getName() + "\n" + device.getAddress();
-                if (! mData.contains(line)) {
-                    mData.add(line);
+                UserData user = new UserData(device.getAddress(), device.getName());
+                if (! isInList(user.getUuid())) {
+                    mData.add(user);
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -121,18 +128,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String getAddress() {
-//        BluetoothAdapter adapt = BluetoothAdapter.getDefaultAdapter();
-//        String myUuid = adapt.getAddress();
-        String myUuid = "123456789";
-        return myUuid;
+        if (USE_BLUETOOTH) {
+            BluetoothAdapter adapt = BluetoothAdapter.getDefaultAdapter();
+            return adapt.getAddress();
+        } else {
+            return "123456789";
+        }
     }
 
     public void discover() {
         getUserList();
-//        boolean worked = adapt.startDiscovery();
-//        if (! worked) {
-//            Toast.makeText(this, "Bluetooth failed", Toast.LENGTH_LONG).show();
-//        }
+
+        if (USE_BLUETOOTH) {
+            BluetoothAdapter adapt = BluetoothAdapter.getDefaultAdapter();
+            boolean worked = adapt.startDiscovery();
+            if (! worked) {
+                Toast.makeText(this, "Bluetooth failed", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     public void register() {
@@ -169,8 +182,7 @@ public class MainActivity extends AppCompatActivity {
     public void updateUserList(JSONObject users) {
         try {
             Toast.makeText(this, "Got data", Toast.LENGTH_SHORT).show();
-            // TODO: refresh mData with mappings....
-
+            // refresh mData with mappings....
             for (Object item : mData) {
                 UserData user = (UserData)item;
                 String uuid = user.getUuid();
@@ -180,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             adapter.notifyDataSetChanged();
-            Toast.makeText(this, "Updating View", Toast.LENGTH_LONG).show();
         } catch (JSONException e) {
             e.printStackTrace();
         }

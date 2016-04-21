@@ -35,6 +35,32 @@ background services  ()
 push notification  - google service from web app
  */
 
+class UserData {
+    String mUuid;
+    String mName;
+
+    public UserData(String uuid, String name) {
+        mUuid = uuid;
+        mName = name;
+    }
+
+    public void setName(String name) {
+        mName = name;
+    }
+
+    public String getName() {
+        if (mName != null) {
+            return mName;
+        } else {
+            return "(unknown)";
+        }
+    }
+
+    public String getUuid() {
+        return mUuid;
+    }
+}
+
 public class MainActivity extends AppCompatActivity {
 
     ListView bluelist;
@@ -48,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            // TODO: fix this with the UserData
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String line = device.getName() + "\n" + device.getAddress();
@@ -64,8 +91,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bluelist = (ListView)findViewById(R.id.bluelist);
-        mData = new ArrayList<String>();
-        mData.add("<BLANK HEADER>");
+
+        mData = new ArrayList<UserData>();
+        mData.add(new UserData("123456789", null));
+        mData.add(new UserData("deadbeef", "someone else"));
+        mData.add(new UserData("foobarbaz", null));
+
         adapter = new ListAdapter(this, mData);
         bluelist.setAdapter(adapter);
 
@@ -137,15 +168,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateUserList(JSONObject users) {
         try {
-            mUserMap = new HashMap<String, String>();
-            Iterator keys = users.keys();
-            while (keys.hasNext()) {
-                String key = (String)keys.next();
-                String val = users.getString(key);
-                mUserMap.put(key, val);
-            }
-            Toast.makeText(this, "Got data", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Got data", Toast.LENGTH_SHORT).show();
             // TODO: refresh mData with mappings....
+
+            for (Object item : mData) {
+                UserData user = (UserData)item;
+                String uuid = user.getUuid();
+                if (users.has(uuid)) {
+                    String name = users.getString(uuid);
+                    user.setName(name);
+                }
+            }
+            adapter.notifyDataSetChanged();
+            Toast.makeText(this, "Updating View", Toast.LENGTH_LONG).show();
         } catch (JSONException e) {
             e.printStackTrace();
         }

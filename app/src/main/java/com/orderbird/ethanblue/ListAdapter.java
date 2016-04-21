@@ -22,9 +22,10 @@ import java.util.TooManyListenersException;
 
 public class ListAdapter extends BaseAdapter {
     private Activity mContext;
-    private List<String> mList;
+    private List<UserData> mList;
     private LayoutInflater mLayoutInflater = null;
-    public ListAdapter(Activity context, List<String> list) {
+
+    public ListAdapter(Activity context, List<UserData> list) {
         mContext = context;
         mList = list;
         mLayoutInflater = (LayoutInflater) mContext
@@ -59,20 +60,24 @@ public class ListAdapter extends BaseAdapter {
         } else {
             viewHolder = (CompleteListViewHolder) v.getTag();
         }
-        viewHolder.mListItem.setText(mList.get(position));
+        UserData itemData = mList.get(position);
+        viewHolder.mListName.setText(itemData.getName());
+        viewHolder.mListUuid.setText(itemData.getUuid());
         viewHolder.mImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putString("name", mList.get(position));
+                UserData itemData = mList.get(position);
+                bundle.putString("name", itemData.getName());
+                bundle.putString("uuid", itemData.getUuid());
                 Intent details = new Intent(v.getContext(), DetailActivity.class);
                 details.putExtras(bundle);
                 v.getContext().startActivity(details);
-                Intent phone = new Intent(Intent.ACTION_CALL);
-                phone.setData(Uri.parse("tel:1234-5678"));
+//                Intent phone = new Intent(Intent.ACTION_CALL);
+//                phone.setData(Uri.parse("tel:1234-5678"));
 //                v.getContext().startActivity(phone);
-                Intent web = new Intent(Intent.ACTION_VIEW);
-                web.setData(Uri.parse("http://www.pimcore.com/"));
+//                Intent web = new Intent(Intent.ACTION_VIEW);
+//                web.setData(Uri.parse("http://www.pimcore.com/"));
 //                v.getContext().startActivity(web);
             }
         });
@@ -81,10 +86,12 @@ public class ListAdapter extends BaseAdapter {
 }
 
 class CompleteListViewHolder {
-    public TextView mListItem;
+    public TextView mListName;
+    public TextView mListUuid;
     public ImageButton mImageButton;
     public CompleteListViewHolder(View base) {
-        mListItem = (TextView) base.findViewById(R.id.list_item);
+        mListName = (TextView) base.findViewById(R.id.list_name);
+        mListUuid = (TextView) base.findViewById(R.id.list_uuid);
         mImageButton = (ImageButton) base.findViewById(R.id.list_image);
     }
 }

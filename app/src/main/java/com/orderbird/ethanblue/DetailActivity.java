@@ -6,15 +6,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class DetailActivity extends AppCompatActivity {
-    TextView mTextView;
+    TextView mNameView;
+    TextView mUuidView;
+
+    protected TextView setTextView(int id, String key) {
+        TextView view = (TextView)findViewById(id);
+        String text = getIntent().getExtras().getString(key);
+        view.setText(text);
+        return view;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        mTextView = (TextView)findViewById(R.id.detail_name);
-        String text = getIntent().getExtras().getString("name");
-        mTextView.setText(text);
-//        Toast.makeText(this, "Create Detail Activity", Toast.LENGTH_SHORT).show();
+        mNameView = setTextView(R.id.detail_name, "name");
+        mUuidView = setTextView(R.id.detail_uuid, "uuid");
     }
 }

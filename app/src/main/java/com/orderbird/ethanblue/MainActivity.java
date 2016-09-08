@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import go.demo.Demo;
 import go.demo.GoData;
+import go.demo.GoList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     protected boolean isInList(String uuid) {
         for (Object item: mData) {
             UserData user = (UserData)item;
-            if (user.getUuid() == uuid) {
+            if (user.getUuid().equals(uuid)) {
                 return true;
             }
         }
@@ -155,6 +156,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             GoData data = Demo.demoUser();
             addUser(data.getUuid(), data.getName());
+            GoList list= Demo.userList();
+            for (long i = list.len(); i > 0; i--) {
+                GoData user = list.get(i-1);
+                addUser(user.getUuid(), user.getName());
+            }
         }
     }
 

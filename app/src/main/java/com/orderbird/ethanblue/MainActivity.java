@@ -16,6 +16,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import go.demo.Demo;
+import go.demo.GoData;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -150,7 +153,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Bluetooth failed", Toast.LENGTH_LONG).show();
             }
         } else {
-            addUser("address", "name");
+            GoData data = Demo.demoUser();
+            addUser(data.getUuid(), data.getName());
         }
     }
 

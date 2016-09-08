@@ -84,14 +84,18 @@ public class MainActivity extends AppCompatActivity {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                UserData user = new UserData(device.getAddress(), device.getName());
-                if (! isInList(user.getUuid())) {
-                    mData.add(user);
-                }
-                adapter.notifyDataSetChanged();
+                addUser(device.getAddress(), device.getName());
             }
         }
     };
+
+    private void addUser(String addr, String name) {
+        UserData user = new UserData(addr, name);
+        if (! isInList(user.getUuid())) {
+            mData.add(user);
+        }
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
             if (! worked) {
                 Toast.makeText(this, "Bluetooth failed", Toast.LENGTH_LONG).show();
             }
+        } else {
+            addUser("address", "name");
         }
     }
 
